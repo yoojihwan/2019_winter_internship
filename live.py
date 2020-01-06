@@ -2,6 +2,7 @@
 # Tested with OpenCV3
 
 import cv2
+from datetime import datetime
 
 cap = cv2.VideoCapture(0)
 
@@ -26,15 +27,19 @@ while(True):
 
 	print("Found {0} faces!".format(len(faces)))
 
-	# Draw a rectangle around the faces
-	for (x, y, w, h) in faces:
-		cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-
+	if len(faces) > 0:
+		for (x, y, w, h) in faces:
+			cropped = frame[y - int(h / 10):y + h + int(h/10), x - int(w / 10):x + w + int(w / 10)]
+			cv2.imwrite("./face_img/" + str(datetime.now()) + ".png", cropped)
+		break
 
 	# Display the resulting frame
 	cv2.imshow('frame', frame)
 	if cv2.waitKey(1) & 0xFF == ord('q'):
 		break
+
+cv2.imshow('cropped', cropped)
+cv2.waitKey(0)
 
 # When everything done, release the capture
 cap.release()
